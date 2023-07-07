@@ -1,0 +1,17 @@
+{
+  "name": "edidiecardealer-",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-client": "cd frontend && npm run build",
+    "install-frontend": "cd frontend && npm install --legacy-peer-deps",
+    "setup-production": "npm run install-frontend && npm run build-client && npm install --legacy-peer-deps",
+    "start": "cd backend && npm install && npm run server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
