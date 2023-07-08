@@ -34,11 +34,6 @@ app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/upload", uploadRoute);
 app.use("/api/v1/reservations", cartRoute);
 app.use("/api/v1/chat", chatRoute);
-app.post("/api/v1/create-payment-intent", stripeCheckout);
-app.get("/api/v1/config/paypal", (req, res) => {
-  res.send(process.env.PAYPAL_CLIENT_ID);
-});
-
 app.post('/api/v1/stripe', stripeCheckout)
 // app.get('/payment_intents', getAllStripePaymentIntent)
 const __dirname = path.resolve();
