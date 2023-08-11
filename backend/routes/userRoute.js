@@ -18,7 +18,7 @@ router.get("/", authMiddleware, adminMiddleware, GetAllUser);
 router
   .route("/admin/profile/:id")
   .delete(authMiddleware, adminMiddleware, DeleteUser)
-  .get(authMiddleware, adminMiddleware, GetUserById)
+  .get(authMiddleware, GetUserById)
   .put(authMiddleware, adminMiddleware, AdminUpdateUser);
 
 router

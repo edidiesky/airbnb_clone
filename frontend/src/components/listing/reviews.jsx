@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import FooterHosting from "./footer";
+import { useSelector } from "react-redux";
 import Star from "../common/svg/star";
 export default function ReviewOfPlace() {
+  const { userInfo } = useSelector((store) => store.user);
+  const { GigsDetails } = useSelector((store) => store.gigs);
   return (
     <>
       <ReviewOfPlaceContainer className="flex column gap-2 w-85 auto">
@@ -17,17 +20,18 @@ export default function ReviewOfPlace() {
           <div className="ReviewOfCenter flex item-start gap-4 justify-start w-90 auto">
             <div className="authC_right flex column flex-1 gap-1">
               <img
-                src="https://a0.muscache.com/im/pictures/miso/Hosting-47025046/original/4d713a1e-ab4c-4d70-905f-d24b4042189f.jpeg?im_w=720"
+                src={GigsDetails?.listing_image[0]}
                 alt=""
                 className="image"
               />
               <div className="flex column">
                 <h4 className="fs-16 text-bold w-100 flex item-center justify-space">
-                  Fun Boat
+                  {GigsDetails?.listing_title}
                   <Star />
                 </h4>
                 <h5 className="fs-16 text-extra-bold text-dark">
-                  $340 <span className="text-light fs-14">night</span>
+                  ${GigsDetails?.listing_price}{" "}
+                  <span className="text-light fs-14">night</span>
                 </h5>
               </div>
             </div>{" "}
@@ -58,7 +62,10 @@ export default function ReviewOfPlace() {
           </div>
         </div>
       </ReviewOfPlaceContainer>
-      <FooterHosting next={"325353/structure"} prev={"overview"} />
+      <FooterHosting
+        next={`${userInfo?._id}/price`}
+        prev={`${userInfo?._id}/price`}
+      />
     </>
   );
 }
@@ -79,22 +86,23 @@ const ReviewOfPlaceContainer = styled.div`
   }
   .list1 {
     /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
   .ReviewOfCenter {
     @media (max-width: 780px) {
       flex-direction: column;
       gap: 2rem;
+      width: 100%;
     }
   }
   .image {
-    width: 25rem;
+    width: 100%;
     object-fit: cover;
   }
   h2 {
     font-size: 45px;
     line-height: 1.2;
-    @media (max-width: 780px) {
+    @media (max-width: 980px) {
       font-size: 40px;
     }
   }

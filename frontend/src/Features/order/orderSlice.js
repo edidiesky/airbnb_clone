@@ -14,8 +14,8 @@ import {
 const initialState = {
   orderisSuccess: false,
   orderisError: false,
-  order: null,
-  orders: null,
+  order: [],
+  orderDetails: null,
   orderisLoading: false,
   showAlert: false,
   alertText: "",
@@ -130,7 +130,7 @@ const orderSlice = createSlice({
     },
     [getCustomerOrder.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.orders = action.payload;
+      state.orderDetails = action.payload;
     },
     [getCustomerOrder.rejected]: (state, action) => {
       state.isLoading = false;
@@ -146,7 +146,7 @@ const orderSlice = createSlice({
     },
     [getAllCustomersOrder.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.orders = action.payload.order;
+      state.orderDetails = action.payload.order;
       state.orderpage = action.payload.noOfPages;
       state.totalorder = action.payload.totalOrder;
     },

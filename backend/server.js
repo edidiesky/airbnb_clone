@@ -5,43 +5,37 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-import connectDb from "./db/connect.js";
 import { errorHandler, NotFound } from "./middleware/error-handler.js";
 
 import mongoose from "mongoose";
-
 
 // middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// routes
+
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import reviewRoute from "./routes/reviewRoutes.js";
-import gigRoute from "./routes/gigRoutes.js";
+import listingRoute from "./routes/listingRoutes.js";
 import uploadRoute from "./routes/uploadRoute.js";
-import cartRoute from "./routes/resrevations.js";
+import reservationRoute from "./routes/reservations.js";
 import orderRoute from "./routes/orderRoutes.js";
-
 import chatRoute from "./routes/chatRoutes.js";
-import stripeCheckout from "./controllers/stripeController.js";
+
+// end points
 
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/user", userRoute);
-app.use("/api/v1/gig", gigRoute);
+app.use("/api/v1/listing", listingRoute);
 app.use("/api/v1/review", reviewRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/upload", uploadRoute);
-app.use("/api/v1/reservations", cartRoute);
+app.use("/api/v1/reservations", reservationRoute);
 app.use("/api/v1/chat", chatRoute);
-app.post('/api/v1/stripe', stripeCheckout)
 // app.get('/payment_intents', getAllStripePaymentIntent)
 const __dirname = path.resolve();
-
-app.use(
-  "/public/uploads",
-  express.static(path.join(__dirname, "/public/uploads"))
-);
 
 // console.log((path.join(__dirname, '/public/uploads')))
 
@@ -58,17 +52,17 @@ mongoose.connect(
 
 // production mode process
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) =>
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"))
-  );
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running....");
-  });
-}
+//   app.get("*", (req, res) =>
+//     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"))
+//   );
+// } else {
+//   app.get("/", (req, res) => {
+//     res.send("API is running....");
+//   });
+// }
 
 // Middlewares
 app.use(NotFound);

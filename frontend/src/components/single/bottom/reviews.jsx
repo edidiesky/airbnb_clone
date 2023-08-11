@@ -39,23 +39,31 @@ const reviewCard = [
 
 const Reviews = () => {
   return (
-    <div>
-      <div
-        className="w-100 bottom flex column gap-3"
-        style={{ paddingBottom: "3rem" }}
-      >
-        <h3 className="fs-24 text-dark flex item-center gap-1">
-          <Star /> 4.92 · 390 reviews
-        </h3>
-        <ReviewWrapper>
-          {reviewCard.map((x) => {
-            return <ReviewsCard x={x} />;
-          })}
-        </ReviewWrapper>
-      </div>
-    </div>
+    <ReviewStyles
+      className="w-100 bottom flex column gap-3"
+      style={{ paddingBottom: "3rem" }}
+    >
+      {/* <h3 className="fs-24 text-dark flex item-center gap-1">
+        <Star /> 4.92 · 390 reviews
+      </h3>
+      <ReviewWrapper>
+        {reviewCard.map((x) => {
+          return <ReviewsCard x={x} />;
+        })}
+      </ReviewWrapper> */}
+      <h3 className="fs-20 text-dark text-bold  flex item-center gap-1">
+      No reviews (yet)
+      </h3>
+    </ReviewStyles>
   );
 };
+
+const ReviewStyles = styled.div`
+  width: 100%;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+`;
 
 const ReviewWrapper = styled.div`
   width: 100%;

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 const DetailsLoading = () => {
   return (
@@ -7,17 +9,19 @@ const DetailsLoading = () => {
       className="w-100 flex column back-white"
     >
       <div className="flex column" style={{ gap: ".5rem" }}>
-        <div className="top skeleton"></div>
-        <div className="top skeleton top2"></div>
+        <div className="flex column gap-10">
+          <Skeleton width={400} height={25} />
+          <Skeleton width={250} height={25} />
+        </div>
       </div>
       <div className="center">
         <Wrapper>
-          <div className="w-100 imagewrapper skeleton"></div>
-          <Wrapper>
-            <div className="w-100 imagewrapper skeleton images"></div>{" "}
-            <div className="w-100 imagewrapper skeleton images"></div>{" "}
-            <div className="w-100 imagewrapper skeleton images"></div>{" "}
-            <div className="w-100 imagewrapper skeleton images"></div>
+          <Skeleton height={400} />
+          <Wrapper className="active">
+            <Skeleton height={200} />
+            <Skeleton height={200} />
+            <Skeleton height={195} />
+            <Skeleton height={190} />
           </Wrapper>
         </Wrapper>
       </div>
@@ -25,22 +29,21 @@ const DetailsLoading = () => {
         <div className="w-100 flex column gap-1">
           <div className="w-100 flex item-center justify-space">
             <div className="flex flex-1 column" style={{ gap: ".5rem" }}>
-              <div className="top skeleton"></div>
-              <div className="top skeleton top3"></div>
+              <div className="flex column gap-1">
+                <Skeleton width={370} height={25} />
+                <Skeleton width={250} height={25} />
+              </div>
             </div>
-            <div className="avatar skeleton"></div>
+            <Skeleton circle width={60} height={60} />
           </div>
-          <div className="flex flex-1 column" style={{ gap: ".5rem" }}>
-            <div className="top w-100 skeleton"></div>
-            <div className="top skeleton top2"></div>
-          </div>
-          <div className="flex flex-1 column" style={{ gap: ".5rem" }}>
-            <div className="top skeleton"></div>
+          <div className="flex column gap-1">
+            <Skeleton width={300} height={25} />
+            <Skeleton width={200} height={25} />
           </div>
         </div>
         <div className="flex column" style={{ gap: ".5rem" }}>
-          <div className="top skeleton top2"></div>
-          <div className="top skeleton"></div>
+          <Skeleton width={280} height={25} />
+          <Skeleton width={150} height={25} />
         </div>
       </CenterWrapper>
     </DetailsLoadingContent>
@@ -99,7 +102,11 @@ export const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 0.3rem;
-  min-height: 23rem;
+  &.active {
+    @media (max-width: 780px) {
+      display: none;
+    }
+  }
 
   .images {
     @media (max-width: 780px) {

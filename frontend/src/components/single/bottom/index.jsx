@@ -19,13 +19,13 @@ const BottomIndex = () => {
         <div className="flex w-100 item-center gap-2">
           <div className="flex item-center gap-1">
             <img
-              src={GigsDetails?.authorId?.image}
+              src={GigsDetails?.listing_host_Id?.image}
               alt=""
-              style={{ width: "5rem", height: "5rem", borderRadius: "50%" }}
+              style={{ width: "5rem", height: "5rem", borderRadius: "50%",objectFit:"cover" }}
             />
             <div className="flex column item-start gap-2">
               <h3 className="fs-24 text-dark text-bold">
-                Hosted by {GigsDetails?.authorId?.username}
+                Hosted by {GigsDetails?.listing_host_Id?.username}
                 <span className="block fs-14 text-grey text-light">
                   Joined in August 2015
                 </span>
@@ -44,9 +44,9 @@ const BottomIndex = () => {
               style={{ width: "60%" }}
               className="flex column fs-20 text-dark gap-1"
             >
-              {GigsDetails?.authorId?.username} is a Superhost
+              {GigsDetails?.listing_host_Id?.username} is a Superhost
               <span
-                style={{ width: "60%" }}
+                style={{ width: "100%" }}
                 className="block w-50 fs-16 text-dark text-light"
               >
                 Superhosts are experienced, highly rated hosts who are committed

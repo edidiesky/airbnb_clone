@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
     },
     process.env.JWT_CODE,
-    { expiresIn: "2d" }
+    { expiresIn: "20d" }
   );
 
   res.status(200).json({ user, token });
@@ -48,7 +48,7 @@ const LoginUser = asyncHandler(async (req, res) => {
   if (!email || !password) {
     res.status(404);
     throw new Error("Please fill in the valid credentails");
-  }
+  } 
   // Find the user in the database
 
   const user = await User.findOne({ email });
@@ -70,7 +70,7 @@ const LoginUser = asyncHandler(async (req, res) => {
       name: user.name,
     },
     process.env.JWT_CODE,
-    { expiresIn: "2d" }
+    { expiresIn: "20d" }
   );
 
   res.status(200).json({ user, token });

@@ -1,8 +1,6 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,800;1,900&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700&family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,500;1,600;1,700&family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200&display=swap'); */
 
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600;1,700&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+  
 * {
   margin: 0;
   padding: 0;
@@ -12,6 +10,12 @@
 }
 button {
   font-family: inherit;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
 }
 .owl-carousel .owl-stage-outer {
   overflow: hidden;
@@ -25,10 +29,33 @@ a {
 }
 .rdrMonth {
   width: 100% !important;
+  font-size: 15px !important;
+}
+.rdrMonthAndYearPickers select {
+  font-size: 16px !important;
+  color: var(--dark-1) !important;
+}
+.css-1flmtb5-MuiDataGrid-root .MuiDataGrid-row {
+  max-height: 100px !important;
+  min-height: 100px !important;
+}
+
+.css-1flmtb5-MuiDataGrid-root
+  .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)
+  > .MuiDataGrid-cell {
+  max-height: 100px !important;
+  min-height: 100px !important;
+}
+
+.rdrDateRangePickerWrapper {
+  border: 2px solid #ccc;
+  border-radius: 50% !important;
+  padding: 10px;
 }
 .rdrCalendarWrapper {
   width: 100% !important;
-  font-size: 13px !important;
+  color: var(--dark-1) !important;
+  font-size: 15px !important;
 }
 .avatar-large {
   width: 5rem;
@@ -41,13 +68,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #fff;
-  font-family: "Lora", sans-serif;
+  font-family: "Montserrat", sans-serif;
   line-height: 1.5;
   font-weight: 600;
 }
-.family1 {
+.highcharts-contextmenu {
+  border-radius: 20px !important; 
+  width: 200px !important;
+  background-color: #f8f8f8 !important; /* Adjust the radius value as needed */
+ color: #333 !important; /* Adjust the radius value as needed */
+}
+
+
+.family3 {
   font-family: "Montserrat", sans-serif;
 }
+
 
 :root {
   --dark-1: rgb(34, 34, 34);
@@ -74,17 +110,44 @@ body {
   border-radius: 50%;
 }
 
+
+/* // Will edit everything selected including everything between a range of dates */
+.CalendarDay__selected_span {
+  background: #82e0aa;
+  color: white;
+  border: 1px solid var(--red);
+}
+ 
+/* // Will edit selected date or the endpoints of a range of dates */
+.CalendarDay__selected {
+  background: var(--red);
+  color: white;
+}
+ 
+/* // Will edit when hovered over. _span style also has this property */
+.CalendarDay__selected:hover {
+  background: orange;
+  color: white;
+}
+ 
+/* // Will edit when the second date (end date) in a range of dates
+// is not yet selected. Edits the dates between your mouse and said date */
+.CalendarDay__hovered_span:hover,
+.CalendarDay__hovered_span {
+  background: brown;
+}
+
 .shadow {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
   transition: all 0.5s;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .shadow:hover {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.09);
 }
 .bottom {
-  padding-bottom: 1.5rem;
+  padding-bottom: 2.4rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -212,6 +275,7 @@ p {
 }
 .text-light {
   font-weight: 400;
+  font-family: "Montserrat", sans-serif;
 }
 .radius1 {
   border-radius: 10px;
@@ -352,8 +416,6 @@ p {
   width: 100%;
 }
 
-
-
 @media screen and (min-width: 768px) {
   /* .owl-theme {
     height: 400px;
@@ -405,12 +467,12 @@ p {
 }
 
 .w-85 {
-  width: 85%;
-  max-width: 1260px;
+  width: 90%;
+  max-width: 1430px;
 }
 .w-90 {
   width: 95%;
-  max-width: 1260px;
+  max-width: 1430px;
 }
 .w-100 {
   width: 100%;
@@ -422,7 +484,6 @@ p {
   margin: 0 auto;
 }
 @media (max-width: 980px) {
-
   p {
     width: 100%;
   }

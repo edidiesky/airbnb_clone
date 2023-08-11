@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { Header, Meta } from "../components/common";
 import styled from "styled-components";
 import SingleIndex from "../components/single";
-import { getSingleGigsDetails } from "../Features/gigs/gigsReducer";
+import { getSingleGigsDetails } from "../Features/listing/listingReducer";
 import { useParams } from "react-router-dom";
-import { clearGigsAlert } from "../Features/gigs/gigsSlice";
+import { clearGigsAlert } from "../Features/listing/listingSlice";
 
 export default function Single() {
  

@@ -1,53 +1,49 @@
-import express from 'express'
-import dotenv from 'dotenv'
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
-const app = express()
-import connectDb from './db/connect.js'
-import mongoose from "mongoose"
+const app = express();
+import connectDb from "./db/connect.js";
+import mongoose from "mongoose";
 
+import Listing from "./models/Listing.js";
+import User from "./models/User.js";
+import userData from "./data/userData.js";
+import listingData from "./data/listingData.js";
 
-import Gig from './models/Gig.js'
-import User from './models/User.js'
-import userData from './data/userData.js'
-import gigData from './data/gigData.js'
-
-mongoose.connect(process.env.MONGO_URl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, () => {
-  console.log('mongo has been connected');
-})
+mongoose.connect(
+  process.env.MONGO_URl,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  () => {
+    console.log("mongo has been connected");
+  }
+);
 
 const importData = async () => {
   try {
-    await Gig.insertMany(gigData)
- 
-    console.log('Data Imported!')
-    process.exit()
+    await Listing.insertMany(listingData);
+    console.log("Data Imported!");
+    process.exit();
   } catch (error) {
-    console.error(`${error}`)
-    process.exit(1)
+    console.error(`${error}`);
+    process.exit(1);
   }
-}
+};
 
 const destroyData = async () => {
   try {
-
-
-    console.log('Data Destroyed!')
-    process.exit()
+    console.log("Data Destroyed!");
+    process.exit();
   } catch (error) {
-    console.error(`${error}`)
-    process.exit(1)
+    console.error(`${error}`);
+    process.exit(1);
   }
-}
+};
 
-if (process.argv[2] === '-d') {
-  destroyData()
+if (process.argv[2] === "-d") {
+  destroyData();
 } else {
-  importData()
+  importData();
 }
-
-
-
-

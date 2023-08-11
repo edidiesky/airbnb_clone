@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { RxCross2 } from "react-icons/rx";
 import { flip } from "../../utils/framer";
-import { offCalendarModal } from "../../Features/gigs/gigsSlice";
+import { offCalendarModal } from "../../Features/listing/listingSlice";
 import DateInput from "../forms/Date";
 import LoaderIndex from "../loaders";
 import { UpdateBuyerReservations } from "../../Features/reservations/reservationsReducer";

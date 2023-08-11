@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 dotenv.config();
 import stripe from "stripe";
 const stripeClient = stripe(process.env.STRIPE_KEY);
-import Cart from "../models/Reservations.js";
 import Order from "../models/Order.js";
 import moment from "moment";
 import asyncHandler from "express-async-handler";
+import expressAsyncHandler from "express-async-handler";
+import Reservations from "../models/Reservations.js";
 
 // GET All Order
 //  Private
@@ -58,18 +59,33 @@ const GetOrderById = async (req, res) => {
 // Create Order for the user
 //  Private
 // User
-const CreateOrder = async (req, res) => {
+const CreateOrder = expressAsyncHandler(async (req, res) => {
   // instantiate the form data from the request body
   const { userId } = req.user;
-  const { image, title, price, startDate, endDate, orders } = req.body;
+  const {
+    image,
+    title,
+    price,
+    children,
+    infants,
+    adults,
+    startDate,
+    endDate,
+    orders,
+    reservation_id,
+  } = req.body;
 
   const order = await Order.create({
     buyerId: userId,
-    image,
+    image: orders[0].image,
     title,
     price: parseInt(price),
     startDate,
     endDate,
+    children,
+    infants,
+    adults,
+    reservation_id,
   });
 
   const session = await stripeClient.checkout.sessions.create({
@@ -88,47 +104,55 @@ const CreateOrder = async (req, res) => {
     }),
     mode: "payment",
     payment_method_types: ["card"],
-    success_url: `http://localhost:5173/profile`,
-    cancel_url: `http://localhost:5173/order`,
+    success_url: `http://localhost:5173/${order?._id}/order`,
+    cancel_url: `http://localhost:5173/reservations`,
   });
 
   res.status(200).json({ order, url: session.url });
 
-  // console.log(req.body);
-};
+  // console.log(req.body);y
+});
 
 // Update Order to paid for the user
 //  Private
 // Admin
-const UpdateOrderToPaid = async (req, res) => {
+const UpdateOrderToPaid = expressAsyncHandler(async (req, res) => {
+  // const { reservation_id } = req.body;
   // find the user order in the data base
-  const order = await Order.findOne({ cartId: req.params.id });
-  // check if the order exist
-  if (!order) {
-    res.status(403);
-    throw new Error("This order request does not exist");
-  }
-  // udate the cart
-  const updatedOrder = await Order.findOneAndUpdate(
-    { cartId: req.params.id },
-    {
-      isPaid: true,
-      paidAt: Date.now(),
-      paymentResult: {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.email_address,
+  // if the order id was being provided
+  if (req.params.id !== "undefined") {
+    const order = await Order.findOne({
+      _id: req.params.id,
+      buyerId: req.user.userId,
+    });
+    // // check if the order exist
+    if (!order) {
+      res.status(403);
+      throw new Error("This order request does not exist");
+    }
+    // // // udate the cart
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: req.params.id, buyerId: req.user.userId },
+      {
+        isPaid: true,
+        paidAt: Date.now(),
       },
-    },
-    { new: true }
-  );
-  // clear the buyer cart
-  await Cart.findByIdAndDelete({ _id: req.params.id });
+      { new: true }
+    );
 
-  res.status(200).json({ updatedOrder });
-};
-
+    // get the whi=ole user order
+    const userorder = await Order.find({
+      buyerId: req.user.userId,
+    });
+    res.status(200).json({ userorder });
+  } else {
+    const userorder = await Order.find({
+      buyerId: req.user.userId,
+    });
+    res.status(200).json({ userorder });
+  }
+  // console.log(req.params.id == 'undefined');
+});
 // Update Order to Delivered for the user
 //  Private
 // Admin

@@ -6,6 +6,15 @@ const ReviewSchema = new mongoose.Schema(
     username: {
       type: String,
     },
+
+    listing_host_Id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    listing_Id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Listings",
+    },
     description: {
       type: String,
       required: true,
@@ -13,20 +22,10 @@ const ReviewSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    gig: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Gig'
-    },
-    reviewuser: {
+    listing_buyer_Id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
-    },
-    sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User",
     },
     rating: { type: Number, required: true },
     numreview: { type: Number },

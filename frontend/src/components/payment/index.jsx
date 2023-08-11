@@ -6,11 +6,16 @@ import { BiChevronLeft } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { GetSingleBuyerReservations } from "../../Features/reservations/reservationsReducer";
+import { useSelector } from "react-redux";
 export default function PaymentIndex() {
   const { id } = useParams();
+  const { selectmodal, calendarmodal, GigsDetails } = useSelector(
+    (store) => store.gigs
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     dispatch(GetSingleBuyerReservations(id));
   }, [id]);
 
@@ -18,12 +23,15 @@ export default function PaymentIndex() {
     <PaymentIndexContent>
       <div className="w-90 auto flex column">
         <h3 className="fs-30 w-90 auto flex item-center gap-1">
-          <Link to={"/"} className="icon flex item-center justify-center">
+          <Link
+            to={`/rooms/${GigsDetails?._id}`}
+            className="icon flex item-center justify-center"
+          >
             <BiChevronLeft fontSize={"20px"} />
           </Link>
           Confirm and pay
         </h3>
-        <div className="w-90 auto py-4 grid grid-auto grid-gap4">
+        <div className="w-100 auto py-4 grid grid-auto grid-gap4">
           <SingleLeftIndex id={id} />
           <RightIndex />
         </div>
@@ -72,7 +80,7 @@ const PaymentIndexContent = styled.div`
     display: grid;
     padding: 3rem;
     grid-template-columns: 1fr 35vw;
-    grid-gap: 7rem;
+    grid-gap: 4rem;
     @media (min-width: 1500px) {
       grid-template-columns: 1.2fr 0.9fr;
     }

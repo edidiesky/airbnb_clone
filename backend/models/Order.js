@@ -7,6 +7,10 @@ const orderSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
+    reservation_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Reservations",
+    },
     isPaid: {
       type: Boolean,
       required: true,
@@ -34,6 +38,15 @@ const orderSchema = mongoose.Schema(
       type: String,
       enum: ["Pending", "Delivered", "Not Delivered"],
       default: "Pending",
+    },
+    adults: {
+      type: Number,
+    },
+    children: {
+      type: Number,
+    },
+    infants: {
+      type: Number,
     },
   },
   {

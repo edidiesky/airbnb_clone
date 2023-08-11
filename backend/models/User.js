@@ -3,14 +3,13 @@ import mongoose from "mongoose";
 // a structure of the user
 const UserSchema = new mongoose.Schema(
   {
-   
     username: {
       type: String,
     },
     image: {
       type: String,
     },
-   
+
     email: {
       type: String,
       required: [true, "PLease add an emailvalue"],
@@ -19,13 +18,13 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "PLease add a password value"],
     },
-   
+
     country: {
       type: String,
     },
     role: {
       type: String,
-      enum: ["user","admin"],
+      enum: ["user", "admin"],
       default: "user",
     },
     level: {

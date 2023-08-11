@@ -12,11 +12,15 @@ import Exception from "./StandOut";
 import BasicOfferOfPlace from "./BasicOfferOfPlace";
 import PhotosAboutPlace from "./PhotosAboutPlace";
 import TitleOfPlace from "./TitleOfPlace";
-import InformationOfplace from './InformationOfPlace'
-import PriceOfplace from './PriceOfPlace'
-import Payment from './Payment'
-import Reservations from './Reservations'
-import ReviewOfplace from './ReviewOfPlace'
+import InformationOfplace from "./InformationOfPlace";
+import PriceOfplace from "./PriceOfPlace";
+import Payment from "./Payment";
+import Reservations from "./Reservations";
+import ReviewOfplace from "./ReviewOfPlace";
+import Profile from "./Profile";
+import DurationsOfplace from "./Duration";
+import Order from "./OrderList";
+import UserOrder from "./UserOrder";
 export {
   DescriptionOfplace,
   Layout,
@@ -36,5 +40,9 @@ export {
   PriceOfplace,
   ReviewOfplace,
   Payment,
-  Reservations
+  Reservations,
+  Profile,
+  DurationsOfplace,
+  Order,
+  UserOrder,
 };

@@ -40,25 +40,18 @@ const initialState = {
   authmodal: false,
   profilemodal: false,
   usernamemodal: false,
+  registerIsLoading: false,
+  registerIsSuccess: false,
+  registerIsError: false,
+  loginIsLoading: false,
+  loginIsSuccess: false,
+  loginIsError: false,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    saveShippingAddress: (state, action) => {
-      const addressPayload = action.payload;
-      state.addressData = addressPayload;
-      localStorage.setItem("address", JSON.stringify(state.addressData));
-    },
-    savePaymentType: (state, action) => {
-      const paymentPayload = action.payload;
-      state.paymentData = action.payload;
-      localStorage.setItem("payment", state.paymentData);
-    },
-    ClearauthInfo: (state, action) => {
-      localStorage.removeItem("address");
-    },
     getUser: (state, action) => {
       state.userAlert = true;
       state.userDetails = action.payload;
@@ -136,9 +129,9 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.loginSuccess = true;
       state.userInfo = action.payload.user;
+      state.authmodal = false;
       state.token = action.payload.token;
       state.showAlert = true;
-      state.usernamemodal = false;
       state.alertText = "Login successfull. ...Redirecting soon!";
       state.alertType = "success";
     },
@@ -283,10 +276,6 @@ const userSlice = createSlice({
 export const {
   clearUserAlertError,
   ClearUserInfo,
-  saveShippingAddress,
-  savePaymentType,
-  handleUserSearch,
-  ClearauthInfo,
   getUserPage,
   getUser,
   onAuthModal,

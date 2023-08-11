@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+// import '../index.css';
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { CartSidebar } from "../components/common";
@@ -36,7 +37,7 @@ export default function Layout({ type }) {
     <LayoutContainer className="layout" style={{ height }}>
       <Outlet />
       {/* messgae modal */}
-      
+
       {/* delete modal */}
       <AnimatePresence
         initial="false"
@@ -71,13 +72,36 @@ const LayoutContainer = styled.div`
     width: 100%;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     padding-top: 1rem;
-    z-index: 32838;
+    z-index: 300;
     background-color: #fff;
     padding-bottom: 1rem;
   }
   .hostbtn {
-    padding: 0.9rem 2rem;
-    background-color: var(--dark-1);
+    padding: 0.4rem 2rem;
+    background-image: linear-gradient(
+      to right,
+      #e61e4d 0%,
+      #e31c5f 50%,
+      #d70466 100%
+    );
+    /* padding: 0.8rem 2rem; */
+    min-height: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    color: #fff !important;
+    border: none;
+    outline: none;
+    /* padding: 0.8rem 2rem; */
+    border-radius: 10px;
+    cursor: pointer;
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+    &:hover {
+      opacity: 0.6;
+    }
     color: #fff;
     border-radius: 10px;
 
@@ -86,8 +110,8 @@ const LayoutContainer = styled.div`
       color: var(--dark-1);
     }
     &.grey {
-      background-color: transparent;
-      color: var(--dark-1);
+      background: transparent;
+      color: var(--dark-1) !important;
       text-decoration: underline;
     }
   }

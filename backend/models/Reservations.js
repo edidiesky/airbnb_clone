@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 // resrevations schema of the buyer the gig created by the author
 const ReservationSchema = new mongoose.Schema(
   {
-    authorId: {
+    listing_host_Id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    gigId: {
+    listing_Id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Gigs",
+      ref: "Listings",
     },
     gigQuantity: {
       type: Number,

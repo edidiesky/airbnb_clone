@@ -1,50 +1,42 @@
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+import cloudinary from "cloudinary";
+import multer from "multer";
 
-import express from "express"
-import path from 'path'
-import multer from 'multer'
-const router = express.Router()
+const cloudinaryModule = cloudinary.v2;
+// console.log(process.env.cloud_name);
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'public/uploads/')
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    )
-  },
-})
+cloudinaryModule.config({
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.cloud_key,
+  api_secret: process.env.cloud_secret,
+});
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
-  const mimetype = filetypes.test(file.mimetype)
+const router = express.Router();
+// Configure Multer
+const upload = multer({ dest: 'airbnb/' });
 
-  if (extname && mimetype) {
-    return cb(null, true)
-  } else {
-    cb('Images only!')
+router.post("/", upload.array("files", 4), async (req, res) => {
+  try {
+    // req.files contains an array of uploaded files
+    const files = req.files;
+
+    // Use a loop to upload each file to Cloudinary
+    const urls = [];
+    for (const file of files) {
+      const result = await cloudinaryModule.uploader.upload(file.path);
+      urls.push(result.secure_url);
+    }
+
+    // Optionally, you can respond with the URLs of the uploaded images
+    res.json({ success: true, message: "Images uploaded successfully", urls });
+  } catch (error) {
+    console.error("Error uploading images:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to upload images" });
   }
-}
+});
 
-const upload = multer({
-  storage,
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb)
-  },
-})
-
-
-router.post('/', upload.array('images', 4), (req, res) => {
-  let files = req.files
-  files = files.map(x => {
-    const { path } = x
-    return `/${path}`
-
-  })
-  res.json({ files })
-})
-
-
-export default router
+export default router 

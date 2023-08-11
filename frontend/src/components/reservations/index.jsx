@@ -8,9 +8,9 @@ import { GetSingleBuyerReservations } from "../../Features/reservations/reservat
 
 const ReservationsIndex = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(GetSingleBuyerReservations());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(GetSingleBuyerReservations());
+  // }, []);
   const { Reservations, showAlert, alertText } = useSelector(
     (store) => store.reservations
   );

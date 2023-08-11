@@ -1,18 +1,18 @@
 // import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import Reservations from "../models/Reservations.js";
-import Gig from "../models/Gig.js";
+import Listing from "../models/Listing.js";
 // GET All Reservations
 //  Public
 const GetAllBuyerReservations = asyncHandler(async (req, res) => {
   // instantiate the request queries
-  const queryObject = { authorId: req.user.userId };
+  const queryObject = { listing_host_Id: req.user.userId };
 
   let result = Reservations.find(queryObject)
-    .populate("authorId", "image username")
+    .populate("listing_host_Id", "image username")
     .populate(
-      "gigId",
-      "image price startDate title location endDate adults children infants"
+      "listing_Id",
+      "listing_image listing_price listing_startDate listing_title listing_distance listing_location listing_endDate listing_adults listing_children listing_infants"
     );
 
   const totalReservations = await Reservations.countDocuments({});
@@ -26,13 +26,16 @@ const GetAllBuyerReservations = asyncHandler(async (req, res) => {
   }
 });
 
-// GET SINGLE Gig
+// GET SINGLE Listing
 // Not Private
 const GetSingleBuyerReservations = asyncHandler(async (req, res) => {
-  // find the Gig
+  // find the Listing
   const reservations = await Reservations.findOne({
-    authorId: req.user.userId,
-  }).populate("gigId", "image price title location adults children infants");
+    listing_host_Id: req.user.userId,
+  }).populate(
+    "listing_Id",
+    "listing_image listing_price listing_title listing_location listing_adults listing_children listing_infants"
+  );
 
   if (!reservations) {
     res.status(404);
@@ -45,19 +48,6 @@ const GetSingleBuyerReservations = asyncHandler(async (req, res) => {
 // ADMIN
 const UpdateBuyerReservations = asyncHandler(async (req, res) => {
   const { userId, role } = req.user;
-  const {
-    title,
-    image,
-    category,
-    description,
-    price,
-    countInStock,
-    shortDescription,
-    tags,
-    subInfo,
-    type,
-    deliveryDays,
-  } = req.body;
   const reservation = await Reservations.findById({ _id: req.params.id });
 
   if (!reservation) {
@@ -66,26 +56,16 @@ const UpdateBuyerReservations = asyncHandler(async (req, res) => {
   }
   const data = {
     user: userId,
-    title,
-    tags,
-    image,
-    type,
-    description,
-    price,
-    countInStock,
-    shortDescription,
-    deliveryDays,
-    category,
-    subInfo,
+    ...req.body,
   };
   // check for empty values and repeated values
 
-  const updatedGig = await Reservations.findByIdAndUpdate(
+  const updatedListing = await Reservations.findByIdAndUpdate(
     { _id: req.params.id },
     { ...data },
     { new: true }
   );
-  res.status(200).json({ updatedGig });
+  res.status(200).json({ updatedListing });
 });
 
 // GET SINGLE Reservations
@@ -104,24 +84,24 @@ const CreateBuyerReservations = asyncHandler(async (req, res) => {
 
   // console.log(qty);
   const { id } = req.params;
-  const gig = await Gig.findById({ _id: id });
+  const gig = await Listing.findById({ _id: id });
   const { userId } = req.user;
   if (!gig) {
     res.status(404);
-    throw new Error("Gig not found");
+    throw new Error("Listing not found");
   }
 
   // find the buyer reservations based on its userid and the gig id
   const alreadyinReservations = await Reservations.findOne({
-    gigId: id,
-    authorId: userId,
+    listing_Id: id,
+    listing_host_Id: userId,
   });
   // if in Reservations update it
   if (alreadyinReservations) {
     let reservations = await Reservations.findOneAndUpdate(
       {
-        gigId: id,
-        authorId: userId,
+        listing_Id: id,
+        listing_host_Id: userId,
       },
       { gigQuantity: qty, adults, children, infants, startDate, endDate },
       { new: true }
@@ -132,8 +112,8 @@ const CreateBuyerReservations = asyncHandler(async (req, res) => {
     // checking if the required quantity is greater that the gig countInStock
     // console.log(qty);
     // console.log(gig.countInStock);
-    // trying to update the sellers's Gig count in stock
-    await Gig.findByIdAndUpdate(
+    // trying to update the sellers's Listing count in stock
+    await Listing.findByIdAndUpdate(
       { _id: id },
       { countInStock: 0 },
       { new: true }
@@ -141,8 +121,8 @@ const CreateBuyerReservations = asyncHandler(async (req, res) => {
 
     const reservations = await Reservations.create({
       gigQuantity: qty,
-      authorId: userId,
-      gigId: id,
+      listing_host_Id: userId,
+      listing_Id: id,
       adults,
       children,
       infants,
@@ -168,7 +148,7 @@ const DeleteBuyerReservations = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Reservations not found");
   }
-  await Reservations.findOneAndDelete({ authorId: userId, _id: id });
+  await Reservations.findOneAndDelete({ listing_host_Id: userId, _id: id });
   res
     .status(200)
     .json({ message: "This reservation has been succesfully deleted" });

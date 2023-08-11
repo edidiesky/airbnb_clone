@@ -11,8 +11,8 @@ const Food = () => {
         focusable="false"
         style={{
           display: "block",
-          height: "20px",
-          width: "20px",
+          height: "25px",
+          width: "25px",
           stroke: "#222",
           strokeWidth: "1",
           overflow: "visible",

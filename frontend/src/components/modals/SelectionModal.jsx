@@ -5,7 +5,7 @@ import { BiMinus, BiPlus } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { RxCross2 } from "react-icons/rx";
 import { flip } from "../../utils/framer";
-import { offSelectModal } from "../../Features/gigs/gigsSlice";
+import { offSelectModal } from "../../Features/listing/listingSlice";
 import LoaderIndex from "../loaders";
 import { UpdateBuyerReservations } from "../../Features/reservations/reservationsReducer";
 

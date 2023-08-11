@@ -1,99 +1,95 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { BiChevronLeft, BiChevronRight, BiStar } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import Heart from "./svg/heart";
 import Star from "./svg/star";
-import { onProfileModal } from "../../Features/user/userSlice";
 import { RxCross2 } from "react-icons/rx";
 import {
   addProductToWish,
   clearWishMessage,
-  handleWishId,
   onWishDeleteModal,
 } from "../../Features/wish/wishSlice";
-import { useEffect } from "react";
-import Message from "../loaders/Message";
 import { DeleteBuyerReservations } from "../../Features/reservations/reservationsReducer";
-
-const CardLoading = () => {
-  return (
-    <CardLoadingContent
-      style={{ gap: ".4rem" }}
-      className="w-100 flex column back-white"
-    >
-      <div className="top w-100"></div>
-      <div style={{ gap: ".2rem" }} className="flex column w-100">
-        <div className="center w-100 auto flex gap-1 item-center justify-space">
-          <div
-            style={{ borderRadius: "6px" }}
-            className="topCenter skeleton"
-          ></div>
-          <div
-            style={{ borderRadius: "6px" }}
-            className="bottomCenter skeleton"
-          ></div>
-        </div>
-        <div
-          className="w-100 auto flex column item-start"
-          style={{ gap: ".4rem" }}
-        >
-          <div
-            style={{ width: "50%", borderRadius: "6px" }}
-            className="h-6 duration1 skeleton"
-          ></div>
-          <div
-            style={{ width: "35%", borderRadius: "6px" }}
-            className="h-6 duration2 skeleton"
-          ></div>
-        </div>
-      </div>
-    </CardLoadingContent>
-  );
-};
+import CardSkeleton from "./cardskeleton";
 
 export default function Card({ x, index, type }) {
   const [tabindex, setTabIndex] = useState(0);
-  // const [wishsindex, wishidArray] = useState([]);
   const dispatch = useDispatch();
-  const { Gigs, gigsIsLoading } = useSelector((store) => store.gigs);
-  const { Reservations, ReservationsIsLoading } = useSelector(
-    (store) => store.reservations
-  );
-  const { wish, wishidArray, showAlert, alertText } = useSelector(
-    (store) => store.wish
-  );
+  const { gigsIsLoading } = useSelector((store) => store.gigs);
+  const { ReservationsIsLoading } = useSelector((store) => store.reservations);
+  const { wishidArray } = useSelector((store) => store.wish);
 
   const handleImagePosition = (position) => {
     if (position === "left") {
-      setTabIndex(tabindex < 0 ? x?.image?.length - 1 : tabindex - 1);
+      setTabIndex(tabindex < 0 ? x?.listing_image?.length - 1 : tabindex - 1);
     }
     if (position === "right") {
-      setTabIndex(tabindex >= x?.image?.length - 1 ? 0 : tabindex + 1);
+      setTabIndex(tabindex >= x?.listing_image?.length - 1 ? 0 : tabindex + 1);
     }
   };
 
   const handleAddToWish = () => {
     dispatch(
       addProductToWish({
-        image: x.image,
-        title: x.title,
+        listing_image: x?.listing_listing_image,
+        title: x?.listing_title,
         _id: x?._id,
       })
     );
   };
+  let cardid = x?._id;
 
   let wishdetails = x;
 
+  // start date and enddate
+  const startDate = moment(x?.listing_startDate).format("MMMM Do YYYY");
+  const endDate = moment(x?.listing_endDate).format("MMMM Do YYYY");
+  // const endDate = startDate.add(x?.listing_duration, '')
   // if the type is wish
   if (type === "wish") {
     return (
       <CardContent>
-        <div className="w-100 cards flex gap-1 column" key={x?.id}>
+        <div className="w-100 cards flex gap-1 column" key={x?.listing_id}>
           <div className="detailsImageContainer">
             <div className="detailsImageWrapper">
-              {x?.image?.map((x) => {
+              {x?.listing_image?.map((x) => {
+                return (
+                  <div
+                    style={{ transform: `translateX(-${tabindex * 100}%)` }}
+                    className="w-100 card"
+                  >
+                    <div
+                      onClick={() => dispatch(onWishDeleteModal(wishdetails))}
+                      className="icon delete"
+                    >
+                      <RxCross2 />
+                    </div>
+                    <img src={x} alt="" className="w-100" />
+                    <div className="backdrop"></div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <h4 className="fs-18 text-dark text-bold">
+            Amazing Views,{" "}
+            <span className="fs-16 text-light text-grey">2023</span>{" "}
+            <span className="block fs-14 text-grey text-light">1 saved</span>
+          </h4>
+        </div>
+      </CardContent>
+    );
+  } // if the type is wish
+  if (type === "listing") {
+    return (
+      <CardContent>
+        <div className="w-100 cards flex gap-1 column" key={x?.listing_id}>
+          <div className=" listing">
+            <div className="detailsImageWrapper">
+              {x?.listing_image?.map((x) => {
                 return (
                   <div
                     style={{ transform: `translateX(-${tabindex * 100}%)` }}
@@ -113,57 +109,118 @@ export default function Card({ x, index, type }) {
             </div>
           </div>
           <h4 className="fs-18 text-dark">
-            Amazing Views, <span className="fs-16 text-grey">2023</span>{" "}
-            <span className="block fs-14 text-grey">1 saved</span>
+            Condo, <span className="fs-16 text-grey">2023</span>{" "}
+            <span className="block fs-14 text-grey text-light">
+              Large accomodation in a castle with pr...
+            </span>
           </h4>
         </div>
       </CardContent>
     );
   }
-  const handleClearMessage = () => {
-    dispatch(clearWishMessage());
-  };
-
-  useEffect(() => {
-    // const found = Gigs.some((gig) => {
-    //   wish.some((gigs) => gigs?._id === gig?._id);
-    // });
-
-    Gigs.some((obj1, index1) =>
-      wish.some((obj2, index2) => {
-        if (obj2?._id === obj1?._id) {
-          // if it includes in the wishidarray stop else proceed in adding it to the array
-          if (wishidArray.includes(obj2?._id)) {
-            return;
-          } else {
-            dispatch(handleWishId(obj1?._id));
-            return;
-          }
-          return;
-        }
-        return;
-      })
+  if (type === "dashboard") {
+    return (
+      <>
+        {gigsIsLoading ? (
+          <CardSkeleton />
+        ) : (
+          <DashboardCard key={x?.listing_id} className="flex column gap-1">
+            <div className="dashboard_wrapper">
+              <div className="backdrop"></div>
+              <div className="card_header w-100 flex column gap-1 item-start">
+                <div className="w-85 auto flex column item-start gap-1">
+                  <div className="flex">
+                    <h5 className="fs-12 text-white listing_status">Booked</h5>
+                  </div>
+                </div>
+              </div>
+              <div className="detailsImageWrapper">
+                {x?.listing_image?.map((x) => {
+                  return (
+                    <Link
+                      target="_blank"
+                      to={`/rooms/${cardid}`}
+                      style={{ transform: `translateX(-${tabindex * 100}%)` }}
+                      className="w-100 card"
+                    >
+                      <img src={x} alt="" className="w-100 h-100" />
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex column w-90 auto">
+              <div className="flex column">
+                <h4 className="fs-16 text-dark">
+                  ${x?.listing_price}{" "}
+                  <span className="text-light fs-12">night</span>
+                </h4>
+                <h4 className="fs-14 text-dark">
+                  {x?.listing_city}, {x?.listing_country}
+                </h4>
+                <h5 className="fs-12 text-dark text-light">
+                  {x?.listing_distance} kilometers away
+                </h5>
+              </div>
+              <div
+                style={{ gap: ".3rem" }}
+                className="flex fs-12 text-bold item-center"
+              >
+                4.98
+                <div className="flex item-center">
+                  <BiStar color="var(--red)" />
+                  <BiStar color="var(--red)" />
+                  <BiStar color="var(--red)" />
+                  <BiStar color="var(--red)" />
+                </div>
+              </div>
+            </div>
+          </DashboardCard>
+        )}
+      </>
     );
-    // console.log(found);
-  }, [wish, Gigs]);
-  let cardid = x?._id;
+  }
+  // useEffect(() => {
+  //   // const found = Gigs.some((gig) => {
+  //   //   wish.some((gigs) => gigs?._id === gig?._id);
+  //   // });
 
+  //   Gigs.some((obj1, index1) =>
+  //     wish.some((obj2, index2) => {
+  //       if (obj2?._id === obj1?._id) {
+  //         // if it includes in the wishidarray stop else proceed in adding it to the array
+  //         if (wishidArray.includes(obj2?._id)) {
+  //           return;
+  //         } else {
+  //           dispatch(handleWishId(obj1?._id));
+  //           return;
+  //         }
+  //         return;
+  //       }
+  //       return;
+  //     })
+  //   );
+  //   // console.log(found);
+  // }, [wish, Gigs]);
+
+  // resrevation cards
   if (type === "reservations") {
     return (
       <>
         {ReservationsIsLoading ? (
-          <CardLoading />
+          <CardSkeleton />
         ) : (
           <CardContent>
-            <div className="w-100 cards flex gap-1 column" key={x?.id}>
+            <div className="w-100 cards flex gap-1 column" key={x?.listing_id}>
               <div className="detailsImageContainer">
                 <div onClick={handleAddToWish} className="icon">
                   <Heart wishsindex={wishidArray} index={cardid} />
                 </div>
                 <div className="detailsImageWrapper">
-                  {x?.gigId?.image?.map((x) => {
+                  {x?.listing_Id?.listing_image?.map((x) => {
                     return (
                       <Link
+                        target="_blank"
                         to={`/${cardid}/payment`}
                         style={{ transform: `translateX(-${tabindex * 100}%)` }}
                         className="w-100 card"
@@ -177,12 +234,15 @@ export default function Card({ x, index, type }) {
               </div>
 
               <Link
+                target="_blank"
                 to={`/${x?._id}/payment`}
                 className="flex column"
                 style={{ gap: ".2rem" }}
               >
                 <div className="w-100 flex item-center justify-space cardTop">
-                  <h4 className="fs-18 text-dark">{x?.gigId?.location}</h4>
+                  <h4 className="fs-18 text-dark">
+                    {x?.listing_city}, {x?.listing_country}
+                  </h4>
                   <div
                     style={{ gap: ".3rem" }}
                     className="flex text-light fs-16 item-center"
@@ -193,14 +253,15 @@ export default function Card({ x, index, type }) {
                 </div>
                 <div className="flex column">
                   <h4 className="fs-16 text-grey text-light">
-                    {x?.gigId?.distance} kilometers away
+                    {x?.listing_Id?.listing_distance} kilometers away
                   </h4>
                   <h4 className="fs-14 flex item-center gap-1 text-grey text-light">
-                    {x?.gigId?.startDate} <span>to</span> <span> {x?.gigId?.startDate}</span>
+                    {x?.listing_Id?.listing_startDate} <span>to</span>{" "}
+                    <span> {x?.listing_Id?.listing_startDate}</span>
                   </h4>
                 </div>
                 <h4 className="fs-16 text-dark">
-                  ${x?.gigId?.price}{" "}
+                  ${x?.listing_Id?.listing_price}{" "}
                   <span className="text-light fs-16">night</span>
                 </h4>
               </Link>
@@ -220,16 +281,16 @@ export default function Card({ x, index, type }) {
   return (
     <>
       {gigsIsLoading ? (
-        <CardLoading />
+        <CardSkeleton />
       ) : (
         <CardContent>
-          <div className="w-100 cards flex gap-1 column" key={x?.id}>
+          <div className="w-100 cards flex gap-1 column" key={x?.listing_id}>
             <div className="detailsImageContainer">
               <div onClick={handleAddToWish} className="icon">
                 <Heart wishsindex={wishidArray} index={cardid} />
               </div>
               {/* button  */}
-              {x?.image?.length >= 2 && (
+              {x?.listing_image?.length >= 2 && (
                 <div className="flex">
                   {tabindex > 0 && (
                     <div
@@ -249,22 +310,24 @@ export default function Card({ x, index, type }) {
               )}
 
               <div className="detailsImageWrapper">
-                {x.hostinfo?.image && (
+                {/* host image */}
+                {/* {x?.listing_hostinfo?.listing_image && (
                   <div
                     onClick={() => dispatch(onProfileModal())}
                     className="hosticon flex item-center justify-center"
                   >
                     <img
                       className="hostavatar"
-                      src={x.hostinfo?.image}
+                      src={x?.listing_hostinfo?.image}
                       alt=""
                     />
                   </div>
-                )}
+                )} */}
 
-                {x?.image?.map((x) => {
+                {x?.listing_image?.map((x) => {
                   return (
                     <Link
+                      target="_blank"
                       to={`/rooms/${cardid}`}
                       style={{ transform: `translateX(-${tabindex * 100}%)` }}
                       className="w-100 card"
@@ -278,28 +341,35 @@ export default function Card({ x, index, type }) {
             </div>
 
             <Link
+              target="_blank"
               to={`/rooms/${x?._id}`}
               className="flex column"
               style={{ gap: ".2rem" }}
             >
               <div className="w-100 flex item-center justify-space cardTop">
-                <h4 className="fs-18 text-dark">{x?.location}</h4>
+                <h4 className="fs-14 text-extra-bold text-dark">
+                  {x?.listing_city}, {x?.listing_country}
+                </h4>
                 <div
                   style={{ gap: ".3rem" }}
-                  className="flex text-light fs-16 item-center"
+                  className="flex text-light fs-14 item-center"
                 >
                   <Star />
                   4.98
                 </div>
               </div>
               <div className="flex column">
-                <h4 className="fs-16 text-grey text-light">
-                  {x.distance} kilometers away
+                <h4 className="fs-14 text-grey text-light">
+                  {x?.listing_distance} kilometers away
                 </h4>
-                <h4 className="fs-16 text-grey text-light">{x.date}</h4>
+                <h4 className="fs-12 text-grey text-light">
+                  {startDate} - {endDate}
+                </h4>
+                {/* <h4 className="fs-14 text-grey text-light">{x?.listing_date}</h4> */}
               </div>
               <h4 className="fs-16 text-dark">
-                ${x.price} <span className="text-light fs-16">night</span>
+                ${x?.listing_price}{" "}
+                <span className="text-light fs-12">night</span>
               </h4>
             </Link>
           </div>
@@ -331,9 +401,68 @@ const CardContent = styled.div`
       opacity: 0.6;
     }
   }
+  .listing {
+    border-radius: 10px;
+    height: 15rem;
+    position: relative;
+    .detailsImageWrapper {
+      width: 100%;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 100%);
+      overflow: hidden;
+      grid-gap: 0rem;
+      height: 100%;
+      .imagesWrapper {
+        width: 100%;
+        position: relative;
+        transition: all 0.6s ease-in-out;
+        /* height: 50rem; */
+        border-radius: 10px;
+        margin: 0 1.5rem;
+        @media (max-width: 780px) {
+          min-height: 100%;
+        }
+
+        img {
+          width: 100%;
+          object-fit: cover;
+          height: 100%;
+          position: absolute;
+
+          @media (min-width: 1600px) {
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+  .card_header {
+    position: absolute;
+    z-index: 40;
+    bottom: 10%;
+    h4,
+    h5 {
+      color: #fff;
+    }
+  }
   .detailsImageContainer {
     width: 100%;
+    transition: all 0.4s;
     position: relative;
+    &.dashboardCard {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    &.dashboardCard:hover {
+      transform: scale(1.1);
+
+      .detailsImageWrapper {
+        transform: none;
+      }
+    }
+
     &:hover .btnArrow {
       opacity: 1;
     }
@@ -368,6 +497,22 @@ const CardContent = styled.div`
         transform: translateY(-50%);
       }
     }
+    .listing_status {
+      padding: 0.2rem 0.8rem;
+      color: #fff;
+      border-radius: 40px;
+      background: var(--red);
+      font-weight: 400;
+    }
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.4);
+      position: absolute;
+      transition: all 0.4s;
+      width: 100%;
+      height: 18rem;
+      z-index: 10;
+      border-radius: 10px;
+    }
 
     .detailsImageWrapper {
       width: 100%;
@@ -376,6 +521,7 @@ const CardContent = styled.div`
       grid-template-columns: repeat(4, 100%);
       overflow: hidden;
       grid-gap: 0rem;
+      height: 100%;
       .imagesWrapper {
         width: 100%;
         position: relative;
@@ -539,43 +685,70 @@ const CardContent = styled.div`
   }
 `;
 
-const CardLoadingContent = styled.div`
-  /* min-height: 35rem; */
-  min-width: 100%;
-  background-color: #fff;
-  .skeleton {
-    opacity: 0.7;
-    animation: card-loading 1s infinite alternate;
+const DashboardCard = styled.div`
+  background-color: transparent;
+  cursor: pointer;
+  .dashboard_wrapper {
+    height: 15rem;
+    position: relative;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    overflow: hidden;
   }
-  .top {
-    height: 17rem;
-    opacity: 0.4;
-    border-radius: 12px;
-    animation: card-loading 2s infinite alternate;
+  .backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    transition: all 0.4s;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    border-radius: 10px;
   }
-  .bottomCenter {
-    height: 1rem;
-    flex: 0.3;
-  }
-  .h-6 {
-    height: 1.5rem;
-  }
-  .topCenter {
-    width: 50%;
-    height: 1.5rem;
-  }
-  .period1 {
-    animation-duration: 1.5s;
-  }
-  .period2 {
-    animation-duration: 2s;
-  }
-  @keyframes card-loading {
-    0% {
-      background-color: #ebebeb;
+  .card_header {
+    position: absolute;
+    z-index: 40;
+    bottom: 10%;
+    h4,
+    h5 {
+      color: #fff;
     }
-    100% {
-      background-color: #d4dee2a1;
+  }
+
+  .listing_status {
+    padding: 0.2rem 0.8rem;
+    color: #fff;
+    border-radius: 40px;
+    background: var(--red);
+    font-weight: 400;
+  }
+
+  .detailsImageWrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 100%);
+    overflow: hidden;
+    grid-gap: 0rem;
+    height: 100%;
+    position: absolute;
+    transition: all 0.4s;
+    width: 100%;
+    height: 100%;
+    .card {
+      width: 100%;
+      position: relative;
+      transition: all 0.6s ease-in-out;
+
+      img {
+        width: 100%;
+        object-fit: cover;
+        height: 100%;
+        /* position: absolute; */
+
+        @media (min-width: 1600px) {
+          height: 100%;
+          /* object-fit: cover; */
+        }
+      }
     }
   }
 `;

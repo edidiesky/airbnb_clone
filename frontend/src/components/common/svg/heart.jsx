@@ -1,7 +1,7 @@
 import React from "react";
 
 const Heart = ({ wishsindex, index }) => {
-  const found = wishsindex.includes(index);
+  const found = wishsindex?.includes(index);
   // console.log(wishsindex,index);
   // console.log(found);
   return (

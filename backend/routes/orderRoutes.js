@@ -20,7 +20,7 @@ router.route('/stats').get(authMiddleware, adminMiddleware, AggregateUserOrderSt
 router.route('/').get(authMiddleware, adminMiddleware, GetAllOrder)
 router.get('/customer/order', authMiddleware, GetCustomerOrder)
 router.route('/:id').get(authMiddleware, GetOrderById)
-router.route('/:id/pay').put(authMiddleware, UpdateOrderToPaid)
+router.route('/:id/pay').put(authMiddleware,UpdateOrderToPaid)
 router.route('/:id/delivered').put(authMiddleware, adminMiddleware, UpdateOrderToIsDelivered)
 export default router
 

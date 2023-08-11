@@ -1,34 +1,35 @@
 import React from "react";
+import moment from "moment";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function RightIndex() {
   const { ReservationsDetails } = useSelector((store) => store.reservations);
-  let date1 = new Date(ReservationsDetails?.startDate);
-  let date2 = new Date(ReservationsDetails?.endDate);
+  let date1 = moment(ReservationsDetails?.startDate, "DD/MM/YYYY");
+  let date2 = moment(ReservationsDetails?.endDate, "DD/MM/YYYY");
+  const differenceInDays = Math.round((date2 - date1) / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
 
-  const differenceInTime = date2?.getTime() - date1?.getTime(); // Difference in milliseconds
-  const differenceInDays = (differenceInTime / (1000 * 3600 * 24)).toFixed(); // Convert milliseconds to days
-
-  // console.log(differenceInDays);
+  console.log(differenceInDays, date1, date2);
 
   return (
     <RightIndexContent className="w-100">
       <div className="Right flex gap-1 column">
         <div className="w-100 border flex column gap-1">
           <div className="w-100 flex bottom item-start gap-1">
-            <div className="flex item-start gap-1">
+            <div className="flex w-100 item-start gap-1">
               <div className="detailsImageWrapper">
-                {ReservationsDetails?.gigId?.image?.map((x, index) => {
-                  return <img key={index} src={x} alt="" className="w-100" />;
-                })}
+                {ReservationsDetails?.listing_Id?.listing_image?.map(
+                  (x, index) => {
+                    return <img key={index} src={x} alt="" className="w-100" />;
+                  }
+                )}
               </div>
-              <h4 className="fs-14 text-grey">
-                <span className="block fs-12 text-grey text-bold">
+              <h4 className="fs-16 w-100 text-dark text-light">
+                <span className="block fs-12 text-dark text-light">
                   Room in bed and breakfast
                 </span>
                 {/* Quiet riad with lovely terrace (private room) */}
-                {ReservationsDetails?.gigId?.title}
+                {ReservationsDetails?.listing_Id?.listing_title}
               </h4>
             </div>
           </div>
@@ -38,10 +39,13 @@ export default function RightIndex() {
           <div className="flex bottom w-100 column gap-1">
             <h4 className="fs-16 text-light text-dark w-100 justify-space flex item-center">
               <span style={{ textDecoration: "underline" }}>
-                ${ReservationsDetails?.gigId?.price} x {differenceInDays} nights
+                ${ReservationsDetails?.listing_Id?.listing_price} x{" "}
+                {differenceInDays} nights
               </span>
               <span className="text-dark">
-                ${ReservationsDetails?.gigId?.price * differenceInDays}
+                $
+                {ReservationsDetails?.listing_Id?.listing_price *
+                  differenceInDays}
               </span>
             </h4>{" "}
             <h4 className="fs-16 text-light text-dark w-100 justify-space flex item-center">
@@ -55,7 +59,7 @@ export default function RightIndex() {
               <span className="text-dark">
                 $
                 {(
-                  ReservationsDetails?.gigId?.price *
+                  ReservationsDetails?.listing_Id?.listing_price *
                   differenceInDays *
                   0.0142
                 ).toFixed(1)}
@@ -67,8 +71,11 @@ export default function RightIndex() {
             <span className="text-dark">
               $
               {(
-                ReservationsDetails?.gigId?.price * differenceInDays * 0.0142 +
-                ReservationsDetails?.gigId?.price * differenceInDays +
+                ReservationsDetails?.listing_Id?.listing_price *
+                  differenceInDays *
+                  0.0142 +
+                ReservationsDetails?.listing_Id?.listing_price *
+                  differenceInDays +
                 50
               ).toFixed()}
             </span>
@@ -110,6 +117,7 @@ const RightIndexContent = styled.div`
       object-fit: cover;
       height: 8rem;
       position: absolute;
+      border-radius: 10px;
     }
   }
 

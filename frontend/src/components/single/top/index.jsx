@@ -10,17 +10,17 @@ const TopIndex = () => {
 
   return (
     <div className="w-100 flex column gap-2">
-      <h2 className="fs-25">
-        Romantic Staycation-PrivateSunset Pool@megananda
-        <div className="w-100 block">
+      <div className="flex w-100 column" style={{ gap: ".4rem" }}>
+        <h2 className="fs-25">{GigsDetails?.listing_title}</h2>
+        <div style={{ flexWrap: "wrap" }} className="w-100 flex item-center">
           <h5
             className="fs-16 flex item-center text-dark text-bold"
-            style={{ gap: "1rem" }}
+            style={{ gap: ".3rem", flexWrap: "wrap" }}
           >
             <Star /> <span className="fs-16">4.92</span>{" "}
             <span
               className="fs-16 text-dark flex item-center"
-              style={{ textDecoration: "underline",gap:".5rem" }}
+              style={{ textDecoration: "underline", gap: ".5rem" }}
             >
               <Person /> Superhost
             </span>{" "}
@@ -28,11 +28,11 @@ const TopIndex = () => {
               className="fs-16 text-dark"
               style={{ textDecoration: "underline" }}
             >
-              Ubud, Bali, Indonesia
+              {GigsDetails?.listing_city},{" "} {GigsDetails?.listing_country}
             </span>
           </h5>
         </div>
-      </h2>
+      </div>
       <Imagewrapper />
     </div>
   );

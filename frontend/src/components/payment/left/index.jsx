@@ -6,7 +6,7 @@ import {
   offSelectModal,
   onCalendarModal,
   onSelectModal,
-} from "../../../Features/gigs/gigsSlice";
+} from "../../../Features/listing/listingSlice";
 import { AnimatePresence } from "framer-motion";
 import CalendarModal from "../../modals/CalendarModal";
 import Selection from "../../modals/SelectionModal";
@@ -23,16 +23,19 @@ export default function SingleLeftIndex({ id }) {
   const { ReservationsDetails, ReservationsUpdateIsSuccess } = useSelector(
     (store) => store.reservations
   );
+  const { GigsDetails } = useSelector((store) => store.gigs);
 
   const { selectmodal, calendarmodal } = useSelector((store) => store.gigs);
-  const { isloadingStripe, url } = useSelector((store) => store.order);
+  const { orderisLoading, url } = useSelector((store) => store.order);
   const [children, setChildren] = useState(
-    ReservationsDetails?.gigId?.children
+    ReservationsDetails?.listing_Id?.children
   );
-  const [infants, setInfants] = useState(ReservationsDetails?.gigId?.infants);
-  const [adults, setAdults] = useState(ReservationsDetails?.gigId?.adults);
+  const [infants, setInfants] = useState(
+    ReservationsDetails?.listing_Id?.infants
+  );
+  const [adults, setAdults] = useState(ReservationsDetails?.listing_Id?.adults);
 
-  const [dateRange, setDateRange] = useState({
+  const [daterange, setDateRange] = useState({
     selection: {
       startDate: null,
       endDate: null,
@@ -44,8 +47,8 @@ export default function SingleLeftIndex({ id }) {
     children,
     infants,
     adults,
-    startDate: moment(dateRange.selection.startDate).format("DD/MM/YYYY"),
-    endDate: moment(dateRange.selection.endDate).format("DD/MM/YYYY"),
+    startDate: moment(daterange.selection.startDate).format("DD/MM/YYYY"),
+    endDate: moment(daterange.selection.endDate).format("DD/MM/YYYY"),
     qty: 1,
   };
 
@@ -56,7 +59,7 @@ export default function SingleLeftIndex({ id }) {
       setInfants(ReservationsDetails?.infants);
     }
     const backendStartDate = moment(
-      ReservationsDetails?.gigId?.startDate
+      ReservationsDetails?.listing_Id?.startDate
     ).toDate();
     const backendEndDate = moment(ReservationsDetails?.endDate).toDate();
     setDateRange({
@@ -82,44 +85,50 @@ export default function SingleLeftIndex({ id }) {
   };
 
   const dispatch = useDispatch();
-  let date1 = new Date(ReservationsDetails?.startDate);
-  let date2 = new Date(ReservationsDetails?.endDate);
+  let date1 = moment(ReservationsDetails?.startDate, "MMMM Do YYYY, h:mm:ss a");
+  let date2 = moment(ReservationsDetails?.endDate, "MMMM Do YYYY, h:mm:ss a");
+  const differenceInDays = date2.diff(date1, "days").toFixed(); // Convert milliseconds to days
 
-  const differenceInTime = date2?.getTime() - date1?.getTime(); // Difference in milliseconds
-  const differenceInDays = (differenceInTime / (1000 * 3600 * 24)).toFixed(); // Convert milliseconds to days
+  // console.log(ReservationsDetails?.listing_Id?.children);
 
-  // console.log(ReservationsDetails?.gigId?.children);
+  const orderPayment =
+    ReservationsDetails?.listing_Id?.listing_price * differenceInDays * 0.0142 +
+    ReservationsDetails?.listing_Id?.listing_price * differenceInDays +
+    50;
 
   const orders = [
     {
       price: (
-        (ReservationsDetails?.gigId?.price * differenceInDays * 0.0142 +
-          ReservationsDetails?.gigId?.price * differenceInDays +
+        (ReservationsDetails?.listing_Id?.listing_price *
+          differenceInDays *
+          0.0142 +
+          ReservationsDetails?.listing_Id?.listing_price * differenceInDays +
           50) *
         100
       ).toFixed(),
-      image: ReservationsDetails?.gigId?.image,
-      title: ReservationsDetails?.gigId?.title,
+      image: ReservationsDetails?.listing_Id?.listing_image,
+      title: ReservationsDetails?.listing_Id?.listing_title,
       quantity: 1,
     },
   ];
 
   const sessionorder = {
     orders,
-    price: (
-      (ReservationsDetails?.gigId?.price * differenceInDays * 0.0142 +
-        ReservationsDetails?.gigId?.price * differenceInDays +
-        50) *
-      100
-    ).toFixed(),
-    title: ReservationsDetails?.gigId?.title,
+    reservation_id:ReservationsDetails?._id,
+    children,
+    infants,
+    adults,
+    price: parseFloat((orderPayment * 100).toFixed(0)),
+    title: ReservationsDetails?.listing_Id?.listing_title,
     quantity: 1,
-    startDate: ReservationsDetails?.startDate,
-    endDate: ReservationsDetails?.endDate,
+    startDate: moment(daterange.selection.startDate).format("Do MMM YYYY, h:mm:ss a"),
+    endDate: moment(ReservationsDetails?.endDate).format(
+      "MMMM Do YYYY, h:mm:ss a"
+    ),
   };
 
-  // console.log();
-  console.log(ReservationsDetails?.startDate, ReservationsDetails?.endDate);
+  // console.log(sessionorder);
+  // console.log(ReservationsDetails?.startDate, ReservationsDetails?.endDate);
   const handleOrderCreation = () => {
     dispatch(createCustomersOrder(sessionorder));
   };
@@ -129,6 +138,11 @@ export default function SingleLeftIndex({ id }) {
       window.location.href = url;
     }
   }, [url]);
+
+  const startDate = moment(daterange.selection.startDate).format(
+    "MMMM Do YYYY"
+  );
+  const endDate = moment(daterange.selection.endDate).format("MMMM Do YYYY");
   return (
     <div>
       <Message
@@ -145,7 +159,7 @@ export default function SingleLeftIndex({ id }) {
           <CalendarModal
             data={data}
             handleSelect={handleSelect}
-            dateRange={dateRange}
+            daterange={daterange}
           />
         )}
       </AnimatePresence>
@@ -172,13 +186,13 @@ export default function SingleLeftIndex({ id }) {
           className="flex w-100 column gap-1 bottom"
           style={{ paddingBottom: "1.6rem" }}
         >
-          <h3 className="fs-24">Your trip</h3>
+          <h3 className="fs-20">Your trip</h3>
           <div className="w-100 flex column gap-1">
             <div className="w-100 flex item-center justify-space">
               <h4 className="fs-18 text-bold">
                 Dates
                 <span className="block fs-16 text-grey text-light">
-                  Sep 20 – 22
+                  <span>{startDate}</span> – <span>{endDate}</span>
                 </span>
               </h4>
               <div
@@ -216,7 +230,7 @@ export default function SingleLeftIndex({ id }) {
         </div>
         {/* policy */}
         <div className="flex column gap-1 bottom">
-          <h3 className="fs-24">Cancellation policy</h3>
+          <h3 className="fs-20">Cancellation policy</h3>
           <h4 className="fs-14 family1 text-light">
             <span className="text-bold" style={{ textDecoration: "underline" }}>
               Free cancellation before Nov 9.
@@ -229,7 +243,7 @@ export default function SingleLeftIndex({ id }) {
         </div>
         {/* rules */}
         <div className="flex column bottom">
-          <h3 className="fs-24">Ground rules</h3>
+          <h3 className="fs-20">Ground rules</h3>
           <h4 className="fs-16 text-light">
             We ask every guest to remember a few simple things about what makes
             a great guest.
@@ -265,7 +279,7 @@ export default function SingleLeftIndex({ id }) {
         </h5>
         <div className="w-50 flex item-center">
           <div onClick={handleOrderCreation} className="btn fs-16 text-white">
-            {isloadingStripe ? (
+            {orderisLoading ? (
               <LoaderIndex type={"dots"} />
             ) : (
               "Confirm and Pay"

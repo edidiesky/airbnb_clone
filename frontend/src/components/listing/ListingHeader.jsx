@@ -8,7 +8,7 @@ export default function ListingHeader() {
       <ListingHeaderContainer>
         <div className="aboutCenter flex item-center gap-3 justify-center w-85 auto">
           <Logo2 />
-          <div className="flex item-center gap-1 justify-end w-100">
+          <div className="flex top item-center gap-1 justify-end w-100">
             <div className="headBtn fs-14 text-dark text-bold">Questions</div>
             <div className="headBtn fs-14 text-dark text-bold">Save & Exit</div>
           </div>
@@ -20,12 +20,24 @@ export default function ListingHeader() {
 
 const ListingHeaderContainer = styled.div`
   width: 100%;
-  padding: 2rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
   top: 0;
   position: fixed;
-  z-index: 3000;
+  z-index: 300;
   background-color: #fff;
+  .top {
+    @media (max-width: 580px) {
+      justify-content: flex-start;
+    }
+  }
+  .aboutCenter {
+    @media (max-width: 580px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      justify-content: flex-start;
+    }
+  }
 
   .headBtn {
     border: 1px solid rgba(0, 0, 0, 0.4);

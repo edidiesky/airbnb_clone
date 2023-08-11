@@ -4,19 +4,23 @@ import styled from "styled-components";
 const Imagewrapper = () => {
   const { GigsDetails } = useSelector((store) => store.gigs);
 
-  // console.log(GigsDetails?.image)
+  // console.log(GigsDetails?.listing_image)
 
   return (
     <Wrapper>
       <div className="w-100 imagewrapper">
-        <img src={GigsDetails?.image[0]} alt="" className="image w-100 h-100" />
+        <img
+          src={GigsDetails?.listing_image[0]}
+          alt=""
+          className="image w-100 h-100"
+        />
         <div className="gradient"></div>
       </div>
       <Wrapper>
         <div className="w-100 imagewrapper images">
-          {GigsDetails?.image[1] && (
+          {GigsDetails?.listing_image[1] && (
             <img
-              src={GigsDetails?.image[1]}
+              src={GigsDetails?.listing_image[1]}
               alt=""
               className="image w-100 h-100"
             />
@@ -25,9 +29,15 @@ const Imagewrapper = () => {
           <div className="gradient"></div>
         </div>{" "}
         <div className="w-100 imagewrapper images">
-          {GigsDetails?.image[2] && (
+          {GigsDetails?.listing_image[2] ? (
             <img
-              src={GigsDetails?.image[2]}
+              src={GigsDetails?.listing_image[2]}
+              alt=""
+              className="image w-100 h-100"
+            />
+          ) : (
+            <img
+              src={GigsDetails?.listing_image[1]}
               alt=""
               className="image w-100 h-100"
             />
@@ -36,9 +46,15 @@ const Imagewrapper = () => {
           <div className="gradient"></div>
         </div>{" "}
         <div className="w-100 imagewrapper images">
-          {GigsDetails?.image[3] && (
+          {GigsDetails?.listing_image[3] ? (
             <img
-              src={GigsDetails?.image[3]}
+              src={GigsDetails?.listing_image[3]}
+              alt=""
+              className="image w-100 h-100"
+            />
+          ) : (
+            <img
+              src={GigsDetails?.listing_image[1]}
               alt=""
               className="image w-100 h-100"
             />
@@ -47,9 +63,15 @@ const Imagewrapper = () => {
           <div className="gradient"></div>
         </div>{" "}
         <div className="w-100 imagewrapper images">
-          {GigsDetails?.image[4] && (
+          {GigsDetails?.listing_image[4] ? (
             <img
-              src={GigsDetails?.image[4]}
+              src={GigsDetails?.listing_image[4]}
+              alt=""
+              className="image w-100 h-100"
+            />
+          ) : (
+            <img
+              src={GigsDetails?.listing_image[1]}
               alt=""
               className="image w-100 h-100"
             />
@@ -65,7 +87,7 @@ export const Wrapper = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
+  grid-gap: 6px;
   min-height: 20rem;
 
   .images {
@@ -81,6 +103,28 @@ export const Wrapper = styled.div`
   .imagewrapper {
     position: relative;
     height: 100%;
+    &:nth-child(2),
+    &:nth-child(3) {
+      img {
+        border-radius: 0;
+      }
+      .gradient {
+        border-radius: 0;
+      }
+    }
+    &:nth-child(2),
+    &:nth-child(5) {
+      img {
+        border-radius: 0;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .gradient {
+        border-radius: 0;
+        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+    }
     @media (max-width: 780px) {
       min-height: 25rem;
     }
@@ -102,7 +146,7 @@ export const Wrapper = styled.div`
     }
   }
   .image {
-    border-radius: 10px;
+    border-radius: 6px;
     position: absolute;
     object-fit: cover;
   }

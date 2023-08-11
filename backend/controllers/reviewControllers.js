@@ -1,6 +1,6 @@
-import bcrypt from "bcryptjs";
+
 import asyncHandler from "express-async-handler";
-import Gig from "../models/Gig.js";
+import Gig from "../models/Listing.js";
 import Reviews from "../models/Reviews.js";
 
 // Create reviews
@@ -21,23 +21,23 @@ const createReviews = asyncHandler(async (req, res) => {
   // // locate the gig
   if (!gig) {
     res.status(404);
-    throw new Error("Gig not found");
+    throw new Error("No reviews has been found");
   }
 
   // check for permissions (admin and users)
   if (role === "user" || role === "admin") {
     const data = {
-      sellerId: gig.sellerId,
+      listing_host_Id: gig.listing_host_Id,
       description,
       rating,
       gig: gig._id,
-      reviewuser: userId,
+      listing_buyer_Id: userId,
     };
 
     // check if the user has alraedy review the gig
     const reviewed = await Reviews.findOne({
       gig: gig._id,
-      reviewuser: userId,
+      listing_buyer_Id: userId,
     });
     // send an error
     if (reviewed) {
@@ -59,23 +59,16 @@ const createReviews = asyncHandler(async (req, res) => {
 // send the gig id only
 const getSellerReviews = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  // category
-  const search = req.query.search;
-  const sort = req.query.sort;
-  const queryObject = { gig: id };
+  const queryObject = { listing_host_Id: id };
   let result = Reviews.find(queryObject);
-  // search
-  if (search) {
-    queryObject.title = { $regex: search, options: "i" };
-  }
 
-  // find the Gig
+  // find the Seller reviews based on its id
   const reviews = await result
-    .populate("reviewuser", "country email username image")
-    .populate("sellerId", "username");
+    .populate("listing_buyer_Id", "country email username image")
+    .populate("listing_host_Id", "username image email");
   if (!reviews) {
     res.status(404);
-    throw new Error("Gig not found");
+    throw new Error("No reviews has been found");
   }
   // get the review length
   // get the total rating
@@ -90,32 +83,17 @@ const getAllReviews = asyncHandler(async (req, res) => {
   const { id } = req.params;
   // find the Gig
   const reviews = await Reviews.find({})
-    .populate("reviewuser", "country email username")
-    .populate("sellerId", "username");
+    .populate("listing_buyer_Id", "country email username")
+    .populate("listing_host_Id", "username");
   if (!reviews) {
     res.status(404);
-    throw new Error("Gig not found");
+    throw new Error("No reviews has been found");
   }
 
   res.status(200).json({ reviews });
 });
 
-// Like Gig
-//  Public
-// send the gig id only
-const LikeReviews = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  // find the Gig
-  const reviews = await Reviews.find({})
-    .populate("reviewuser", "country email username")
-    .populate("sellerId", "username");
-  if (!reviews) {
-    res.status(404);
-    throw new Error("Gig not found");
-  }
 
-  res.status(200).json({ reviews });
-});
 
 // GET All Gig
 //  Public

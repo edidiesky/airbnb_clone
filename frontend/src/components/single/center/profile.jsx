@@ -21,12 +21,12 @@ export default function Profile({ type, click }) {
           <div className="authCenter flex item-start gap-3 justify-center w-90 auto shadow">
             <div className="authC_right flex column flex-1">
               <img
-                src={GigsDetails?.authorId?.image}
+                src={GigsDetails?.listing_host_Id?.image}
                 alt=""
                 className="avatar"
               />
               <h3 className="fs-30 text-extra-bold text-dark">
-                {GigsDetails?.authorId?.username}
+                {GigsDetails?.listing_host_Id?.username}
                 <span className="block fs-16 text-light text-start family2">
                   Superhost
                 </span>

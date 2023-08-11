@@ -4,21 +4,20 @@ import moment from "moment";
 import Star from "../../common/svg/star";
 import { BiChevronDown } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   onCalendarModal,
   onSelectModal,
-} from "../../../Features/gigs/gigsSlice";
+} from "../../../Features/listing/listingSlice";
 import LoaderIndex from "../../loaders";
 import { useNavigate } from "react-router-dom";
 import { clearReservationsAlert } from "../../../Features/reservations/reservationsSlice";
 
 const RightCenter = ({ limit, dateRange, handleCreateReservation }) => {
   const navigate = useNavigate();
-  const {
-    ReservationsIsLoading,
-    ReservationsIsSuccess,
-    ReservationsDetails,
-  } = useSelector((store) => store.reservations);
+  const { ReservationsIsLoading, ReservationsIsSuccess, ReservationsDetails } =
+    useSelector((store) => store.reservations);
+  const { GigsDetails } = useSelector((store) => store.gigs);
 
   // console.log(ReservationsDetails);
   // navigate if the reservation of the user has been succesfully created
@@ -26,19 +25,27 @@ const RightCenter = ({ limit, dateRange, handleCreateReservation }) => {
     if (ReservationsIsSuccess) {
       navigate(`/${ReservationsDetails?._id}/payment`);
     }
-  }, [ReservationsDetails,ReservationsIsSuccess, navigate]);
+  }, [ReservationsDetails, ReservationsIsSuccess, navigate]);
 
   const formatDate = (date) => {
-    return moment(date).format("DD/MM/YYYY");
+    return moment(date).format("MMMM Do YYYY");
   };
   const dispatch = useDispatch();
+  const differnceinDays = Math.round(
+    (moment(dateRange.selection.endDate, "MMMM Do YYYY") -
+      moment(dateRange.selection.startDate, "MMMM Do YYYY")) /
+      (1000 * 3600 * 24)
+  );
+
+  // console.log(moment(dateRange.selection.endDate, "MMMM Do YYYY"));
   return (
-    <div className="w-100 flex column gap-2">
-      <RightCard>
+    <RigthWrapper className="w-100 h-100">
+      <div className="RightCard">
         <div className="flex w-100 wrapper column gap-1 item-start">
           <div className="top flex justify-space w-100">
             <h4 className="fs-24 text-dark text-bold">
-              $97 <span className="text-grey text-light fs-16">night</span>
+              ${GigsDetails?.listing_price}{" "}
+              <span className="text-dark text-bold fs-12">/ night</span>
             </h4>
             {/* reviews */}
             <h5
@@ -67,10 +74,11 @@ const RightCenter = ({ limit, dateRange, handleCreateReservation }) => {
             >
               <div
                 style={{ padding: ".7rem" }}
-                className=" fs-10 flex-1 family1 text-extra-bold uppercase text-bold"
+                className="fs-10 flex-1 text-extra-bold "
               >
-                check-in
-                <div className="fs-12 block text-grey text-light">
+                <span className="uppercase">check-in</span>
+                
+                <div className="fs-12 block capitalize text-dark text-light">
                   {formatDate(dateRange.selection.startDate)}
                 </div>
               </div>{" "}
@@ -80,10 +88,10 @@ const RightCenter = ({ limit, dateRange, handleCreateReservation }) => {
                   borderLeft: "1px solid rgba(0,0,0,.3)",
                   height: "100%",
                 }}
-                className=" fs-10 text-start flex-1 wrap family1 text-extra-bold uppercase text-bold"
+                className=" fs-10 text-start flex-1 wrap family1 text-extra-bold "
               >
-                check-out
-                <div className="fs-12 block text-grey text-light">
+               <span className="uppercase">check-out</span>
+                <div className="fs-12 block capitalize text-dark text-light">
                   {formatDate(dateRange.selection.endDate)}
                 </div>
               </div>
@@ -138,41 +146,56 @@ const RightCenter = ({ limit, dateRange, handleCreateReservation }) => {
           <div className="flex bottom w-100 column gap-1">
             <h4 className="fs-16 text-light text-dark w-100 justify-space flex item-center">
               <span style={{ textDecoration: "underline" }}>
-                $97 x 5 nights
+                ${GigsDetails?.listing_price} x {differnceinDays} nights
               </span>
-              <span className="text-dark">$485</span>
+              <span className="text-dark">
+                ${(GigsDetails?.listing_price * differnceinDays).toFixed(2)}
+              </span>
             </h4>{" "}
             <h4 className="fs-16 text-light text-dark w-100 justify-space flex item-center">
               <span style={{ textDecoration: "underline" }}>
                 Airbnb service fee
               </span>
-              <span className="text-dark">$485</span>
+              <span className="text-dark">
+                $
+                {(GigsDetails?.listing_price * differnceinDays * 0.015).toFixed(
+                  2
+                )}
+              </span>
             </h4>
           </div>
           <h4 className="fs-18 text-bold text-dark family1 w-100 justify-space flex item-center">
             <span>Total before taxes</span>
-            <span className="text-dark">$485</span>
+            <span className="text-dark">
+              $
+              {(
+                GigsDetails?.listing_price * differnceinDays +
+                GigsDetails?.listing_price * differnceinDays * 0.015
+              ).toFixed(2)}
+            </span>
           </h4>
         </div>
-      </RightCard>
-      {/* <DateReservationsIsSuccess /> */}
-    </div>
+      </div>
+    </RigthWrapper>
   );
 };
 
-const RightCard = styled.div`
-  width: 100%;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+const RigthWrapper = styled.div`
+  .RightCard {
+    width: 100%;
+    padding: 2rem;
+    border-radius: 20px;
+    position: sticky;
+    top: 10%;
+    width: 370px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    @media (max-width:580px) {
+      width: 80%;
+    }
+  }
 
   svg {
     cursor: pointer;
-  }
-
-  .wrapper {
-    position: sticky;
-    top: 5%;
   }
 
   .reserveBtn {
